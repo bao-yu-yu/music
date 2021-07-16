@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-
+        推荐音乐
     </div>
 </template>
 

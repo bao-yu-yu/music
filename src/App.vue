@@ -65,6 +65,8 @@
         width: 100%;
         height: calc(100% - 80px);
         overflow: scroll;
+        background-color: rgba(0, 0, 0, 0.4);
+        box-shadow:inset 0 15px 10px -15px #000;
     }
     .page::-webkit-scrollbar {
         display: none;

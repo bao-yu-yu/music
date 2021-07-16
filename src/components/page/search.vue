@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-
+        搜索
     </div>
 </template>
 

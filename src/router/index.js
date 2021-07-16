@@ -10,6 +10,11 @@ import search from "../components/page/search";
 
 const routes = [
     {
+        path:"/",
+        name:"推荐音乐",
+        component: recommendMusic
+    },
+    {
         path:"/recommendMusic",
         name:"推荐音乐",
         component: recommendMusic

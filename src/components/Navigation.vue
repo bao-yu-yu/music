@@ -1,3 +1,4 @@
+
 <template>
     <div id="app">
         <div id="logo">
@@ -5,28 +6,25 @@
         </div>
         <div id="other">
             <div class="label">
-
             </div>
             <div class="label">
-
             </div>
-            <div class="label recommendMusic">
-                {{pageInformation[0].name}}
-            </div>
-            <div class="label classMusic">
-                {{pageInformation[1].name}}
-            </div>
-            <div class="label myMusic">
-                {{pageInformation[2].name}}
-            </div>
-            <div class="label mySongSheet">
-                {{pageInformation[3].name}}
-            </div>
-            <div class="label search">
-                <label>
-                    <input type="text" class="searchFrame" placeholder="搜索音乐">
-                </label>
-                <input type="submit" value="搜索" class="searchButton">
+            <div v-for="(item, index) of pageInformation" :key="index">
+                <router-link :to="{path:item.url}" class="pageList" tag="div" v-if="item.class!=='search'">
+                    <div :style="{'color':item.fontColor}" :class="['label',item.class]">
+                        {{item.name}}
+                    </div>
+                </router-link>
+                <div v-if="item.class==='search'" >
+                    <label>
+                        <input type="text" class="searchFrame" placeholder="搜索音乐">
+                    </label>
+                </div>
+                <router-link :to="{path:item.url}" class="pageList" tag="div"  v-if="item.class==='search'" >
+                    <div :class="['label',item.class]">
+                        <input type="submit" value="搜索" class="searchButton">
+                    </div>
+                </router-link>
             </div>
         </div>
         <div id="user">
@@ -45,27 +43,63 @@
         },
         data(){
             return{
+                //判断是否绑定对应class
+                isActive: true,
+                hasError: true,
                 // 侧边栏数据信息
-                pageInformation:[]
+                pageInformation:[],
+                // 当前页面的路由
+                thisRouter: ""
             }
         },
         created:function () {
             // sysApi.sys_getDictionary({}).then((res)=>{
             //     console.log(res)
             // });
-            this.pageInformation.push({id:0,url:'recommendMusic',name:'推荐音乐'});
-            this.pageInformation.push({id:1,url:'classMusic',name:'音乐分类'});
-            this.pageInformation.push({id:2,url:'myMusic',name:'我的音乐'});
-            this.pageInformation.push({id:3,url:'mySongSheet',name:'我的歌单'});
-            this.pageInformation.push({id:4,url:'search',name:'搜索'});
+            this.pageInformation.push({id:0,url:'recommendMusic',name:'推荐音乐',class:'recommendMusic',fontColor:'#FFF'});
+            this.pageInformation.push({id:1,url:'classMusic',name:'音乐分类',class:'classMusic',fontColor:'#FFF'});
+            this.pageInformation.push({id:2,url:'myMusic',name:'我的音乐',class:'myMusic',fontColor:'#FFF'});
+            this.pageInformation.push({id:3,url:'mySongSheet',name:'我的歌单',class:'mySongSheet',fontColor:'#FFF'});
+            this.pageInformation.push({id:4,url:'search',name:'搜索',class:'search',fontColor:'#FFF'});
+            this.getUrl();
+
         },
         methods: {
+            getUrl() {
+                this.thisRouter=this.$route.path.split("/")[1];
+                for (let i=0;i<this.pageInformation.length;i++){
+                    this.pageInformation[i].fontColor="#FFF";
+                    // eslint-disable-next-line no-empty
+                    if(this.pageInformation[i].class===this.thisRouter){
+                        this.pageInformation[i].fontColor="#00f6ff";
+                    }
+                }
 
+                if(this.thisRouter===""){
+                    this.pageInformation[0].fontColor="#00f6ff"
+                }
+            }
+        },
+        watch:{
+            $route(to,from){
+                this.thisRouter=to.path.split("/")[1];
+                // eslint-disable-next-line no-empty
+                for (let i=0;i<this.pageInformation.length;i++){
+                    this.pageInformation[i].fontColor="#FFF";
+                    // eslint-disable-next-line no-empty
+                    if(this.pageInformation[i].class===this.thisRouter){
+                        this.pageInformation[i].fontColor="#00f6ff";
+                    }
+                }
+            }
         }
     }
 </script>
 
 <style scoped>
+    html,body,#app{
+        min-width: 1920px;
+    }
     html, body{
         padding:0;
         margin:0;
@@ -109,7 +143,7 @@
         /*border: solid 1px red;*/
     }
     .search{
-        width: 450px;
+        width: 80px;
     }
     .searchFrame{
         float: left;
@@ -122,6 +156,9 @@
         font-size: 15px;
         padding:5px 10px;
     }
+    /*.searchFrame::selection{*/
+    /*    background:rgba(0,0,0,0);*/
+    /*}*/
     .searchButton{
         width: 50px;
         height: 30px;
@@ -134,9 +171,12 @@
         border: 0;
 
     }
+    .searchButton::selection,.recommendMusic::selection,.classMusic::selection,.myMusic::selection,.mySongSheet::selection,.logo::selection,.userImg::selection,.userName::selection{
+        background:rgba(0,0,0,0);
+    }
     .searchButton:hover,.recommendMusic:hover,.classMusic:hover,.myMusic:hover,.mySongSheet:hover{
         cursor:pointer;
-        color: #00f6ff;
+        color: #00f6ff !important;
     }
     #user{
         float: right;
